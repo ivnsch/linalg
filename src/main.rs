@@ -26,11 +26,11 @@ fn main() {
             CameraControllerPlugin,
             RotatorPlugin,
         ))
-        .add_systems(Startup, setup)
+        .add_systems(Startup, (setup_axes, setup_plane))
         .run();
 }
 
-fn setup(
+fn setup_axes(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<LineMaterial>>,
@@ -72,6 +72,36 @@ fn setup(
         CameraController::default(),
         Rotator::default(),
     ));
+}
+
+fn setup_plane(
+    commands: Commands,
+    meshes: ResMut<Assets<Mesh>>,
+    materials: ResMut<Assets<StandardMaterial>>,
+) {
+    let plane = Plane3d {
+        // normal: Direction3d::Z,
+        normal: Direction3d::new(Vec3 {
+            x: 1.0,
+            y: 1.0,
+            z: -1.0,
+        })
+        .unwrap(),
+    };
+    draw_plane(plane, commands, meshes, materials);
+}
+
+fn draw_plane(
+    plane: Plane3d,
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(plane.mesh().size(2.0, 2.0)),
+        material: materials.add(Color::rgb(0.3, 0.5, 0.3)),
+        ..default()
+    });
 }
 
 #[derive(Asset, TypePath, Default, AsBindGroup, Debug, Clone)]
