@@ -26,31 +26,30 @@ fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<LineMaterial>>,
 ) {
-    // Spawn a list of lines with start and end points for each lines
+    let size = 2.0;
+    // x axis
     commands.spawn(MaterialMeshBundle {
         mesh: meshes.add(LineList {
-            lines: vec![
-                (Vec3::ZERO, Vec3::new(1.0, 1.0, 0.0)),
-                (Vec3::new(1.0, 1.0, 0.0), Vec3::new(1.0, 0.0, 0.0)),
-            ],
+            lines: vec![(Vec3::new(-size, 0.0, 0.0), Vec3::new(size, 0.0, 0.0))],
         }),
-        transform: Transform::from_xyz(-1.5, 0.0, 0.0),
         material: materials.add(LineMaterial {
             color: Color::GREEN,
         }),
         ..default()
     });
-
-    // Spawn a line strip that goes from point to point
+    // y axis
     commands.spawn(MaterialMeshBundle {
-        mesh: meshes.add(LineStrip {
-            points: vec![
-                Vec3::ZERO,
-                Vec3::new(1.0, 1.0, 0.0),
-                Vec3::new(1.0, 0.0, 0.0),
-            ],
+        mesh: meshes.add(LineList {
+            lines: vec![(Vec3::new(0.0, -size, 0.0), Vec3::new(0.0, size, 0.0))],
         }),
-        transform: Transform::from_xyz(0.5, 0.0, 0.0),
+        material: materials.add(LineMaterial { color: Color::RED }),
+        ..default()
+    });
+    // z axis
+    commands.spawn(MaterialMeshBundle {
+        mesh: meshes.add(LineList {
+            lines: vec![(Vec3::new(0.0, 0.0, -size), Vec3::new(0.0, 0.0, size))],
+        }),
         material: materials.add(LineMaterial { color: Color::BLUE }),
         ..default()
     });
