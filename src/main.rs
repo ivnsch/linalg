@@ -34,7 +34,15 @@ fn main() {
 
     app.add_systems(
         Startup,
-        (setup_axes, setup_plane, setup_camera, setup_light, setup),
+        (
+            setup_axes,
+            setup_plane,
+            setup_camera,
+            setup_light,
+            setup_x_axis,
+            setup_y_axis,
+            setup_z_axis,
+        ),
     );
 
     // PostStartup since we need the cameras to exist
@@ -250,8 +258,8 @@ fn generate_axis_label(
     mut images: ResMut<Assets<Image>>,
 ) -> CubeWithMaterial {
     let size = Extent3d {
-        width: 412,
-        height: 412,
+        width: 512,
+        height: 512,
         ..default()
     };
 
@@ -338,24 +346,61 @@ fn generate_axis_label(
     }
 }
 
-fn setup(
+fn setup_x_axis(
+    mut commands: Commands,
+    meshes: ResMut<Assets<Mesh>>,
+    materials: ResMut<Assets<StandardMaterial>>,
+    images: ResMut<Assets<Image>>,
+) {
+    let cube = generate_axis_label("x", &mut commands, meshes, materials, images);
+    commands.spawn((
+        to_pbr_bundle(
+            cube,
+            Transform::from_xyz(2.0, 0.0, 0.0).with_rotation(Quat::from_rotation_x(-PI)),
+        ),
+        Cube,
+    ));
+}
+
+fn setup_y_axis(
+    mut commands: Commands,
+    meshes: ResMut<Assets<Mesh>>,
+    materials: ResMut<Assets<StandardMaterial>>,
+    images: ResMut<Assets<Image>>,
+) {
+    let cube = generate_axis_label("y", &mut commands, meshes, materials, images);
+    commands.spawn((
+        to_pbr_bundle(
+            cube,
+            Transform::from_xyz(0.0, 2.0, 0.0).with_rotation(Quat::from_rotation_x(PI / 2.0)),
+        ),
+        Cube,
+    ));
+}
+
+fn setup_z_axis(
     mut commands: Commands,
     meshes: ResMut<Assets<Mesh>>,
     materials: ResMut<Assets<StandardMaterial>>,
     images: ResMut<Assets<Image>>,
 ) {
     let cube = generate_axis_label("z", &mut commands, meshes, materials, images);
-
-    // Cube with material containing the rendered UI texture.
     commands.spawn((
-        PbrBundle {
-            mesh: cube.cube,
-            material: cube.material,
-            transform: Transform::from_xyz(0.0, 0.0, 2.0).with_rotation(Quat::from_rotation_x(-PI)),
-            ..default()
-        },
+        to_pbr_bundle(
+            cube,
+            Transform::from_xyz(0.0, 0.0, 2.0).with_rotation(Quat::from_rotation_x(-PI)),
+        ),
         Cube,
     ));
+}
+
+fn to_pbr_bundle(cube: CubeWithMaterial, transform: Transform) -> PbrBundle {
+    PbrBundle {
+        mesh: cube.cube,
+        material: cube.material,
+        transform,
+        ..default()
+    }
 }
 
 struct CubeWithMaterial {
