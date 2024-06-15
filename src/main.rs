@@ -110,7 +110,12 @@ fn draw_plane(
 ) {
     commands.spawn(PbrBundle {
         mesh: meshes.add(plane.mesh().size(2.0, 2.0)),
-        material: materials.add(Color::rgb(0.3, 0.5, 0.3)),
+        material: materials.add(StandardMaterial {
+            double_sided: true,
+            cull_mode: None,
+            base_color: Color::rgb(0.3, 0.5, 0.3),
+            ..Default::default()
+        }),
         ..default()
     });
 }
