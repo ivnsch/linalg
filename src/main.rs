@@ -1,6 +1,7 @@
 //! Create a custom material to draw basic lines in 3D
 
 mod camera_controller;
+mod rotator;
 use bevy::{
     core_pipeline::prepass::DepthPrepass,
     pbr::{MaterialPipeline, MaterialPipelineKey},
@@ -17,17 +18,19 @@ use bevy::{
     },
 };
 use camera_controller::{CameraController, CameraControllerPlugin};
+use rotator::{Rotator, RotatorPlugin};
 
 fn main() {
     App::new()
-        .insert_resource(GreetTimer(Timer::from_seconds(0.5, TimerMode::Repeating)))
+        // .insert_resource(GreetTimer(Timer::from_seconds(0.5, TimerMode::Repeating)))
         .add_plugins((
             DefaultPlugins,
             MaterialPlugin::<LineMaterial>::default(),
             CameraControllerPlugin,
+            RotatorPlugin,
         ))
         .add_systems(Startup, setup)
-        .add_systems(Update, rotate)
+        // .add_systems(Update, rotate)
         .run();
 }
 
@@ -71,6 +74,7 @@ fn setup(
             ..default()
         },
         CameraController::default(),
+        Rotator::default(),
     ));
 }
 
@@ -92,7 +96,7 @@ fn rotate(
     mut timer: ResMut<GreetTimer>,
     time: Res<Time>,
 ) {
-    let mut camera_transform = camera.single_mut().3;
+    let mut camera_transform: Mut<Transform> = camera.single_mut().3;
 
     let rotation = 0.2;
     if timer.0.tick(time.delta()).just_finished() {
