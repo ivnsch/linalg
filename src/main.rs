@@ -45,9 +45,6 @@ fn main() {
         ),
     );
 
-    // PostStartup since we need the cameras to exist
-    app.add_systems(PostStartup, setup_text);
-
     app.run();
 }
 
@@ -145,43 +142,6 @@ pub struct HeaderNode;
 /// Marker component for header text
 #[derive(Debug, Clone, Component, Default, Reflect)]
 pub struct HeaderText;
-
-fn setup_text(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    cameras: Query<(Entity, &Camera)>,
-) {
-    let active_camera = cameras
-        .iter()
-        .find_map(|(entity, camera)| camera.is_active.then_some(entity))
-        .expect("run condition ensures existence");
-
-    let font_size = 24.0;
-    let font: Handle<Font> = asset_server.load("fonts/FiraMono-Medium.ttf");
-    let style = TextStyle {
-        font,
-        font_size,
-        color: Color::WHITE,
-    };
-    let text = [TextSection::new("Primitive: ", style.clone())];
-
-    commands
-        .spawn((
-            HeaderNode,
-            NodeBundle {
-                style: Style {
-                    justify_self: JustifySelf::Center,
-                    // top: Val::Px(5.0),
-                    ..Default::default()
-                },
-                ..Default::default()
-            },
-            TargetCamera(active_camera),
-        ))
-        .with_children(|parent| {
-            parent.spawn((HeaderText, TextBundle::from_sections(text)));
-        });
-}
 
 #[derive(Asset, TypePath, Default, AsBindGroup, Debug, Clone)]
 struct LineMaterial {
