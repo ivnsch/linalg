@@ -1,5 +1,6 @@
 //! Create a custom material to draw basic lines in 3D
 
+mod camera_controller;
 use bevy::{
     pbr::{MaterialPipeline, MaterialPipelineKey},
     prelude::*,
@@ -13,10 +14,15 @@ use bevy::{
         },
     },
 };
+use camera_controller::{CameraController, CameraControllerPlugin};
 
 fn main() {
     App::new()
-        .add_plugins((DefaultPlugins, MaterialPlugin::<LineMaterial>::default()))
+        .add_plugins((
+            DefaultPlugins,
+            MaterialPlugin::<LineMaterial>::default(),
+            CameraControllerPlugin,
+        ))
         .add_systems(Startup, setup)
         .run();
 }
@@ -55,10 +61,13 @@ fn setup(
     });
 
     // camera
-    commands.spawn(Camera3dBundle {
-        transform: Transform::from_xyz(-2.0, 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
-        ..default()
-    });
+    commands.spawn((
+        Camera3dBundle {
+            transform: Transform::from_xyz(-2.0, 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+            ..default()
+        },
+        CameraController::default(),
+    ));
 }
 
 #[derive(Asset, TypePath, Default, AsBindGroup, Debug, Clone)]
