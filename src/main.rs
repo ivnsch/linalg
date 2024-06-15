@@ -242,12 +242,13 @@ impl From<LineStrip> for Mesh {
 #[derive(Component)]
 struct Cube;
 
-fn setup(
-    mut commands: Commands,
+fn generate_axis_label(
+    label: &str,
+    commands: &mut Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut images: ResMut<Assets<Image>>,
-) {
+) -> CubeWithMaterial {
     let size = Extent3d {
         width: 412,
         height: 412,
@@ -310,7 +311,7 @@ fn setup(
         ))
         .with_children(|parent| {
             parent.spawn(TextBundle::from_section(
-                "z",
+                label,
                 TextStyle {
                     font_size: 320.0,
                     color: Color::BLACK,
@@ -331,14 +332,33 @@ fn setup(
         ..default()
     });
 
+    CubeWithMaterial {
+        cube: cube_handle,
+        material: material_handle,
+    }
+}
+
+fn setup(
+    mut commands: Commands,
+    meshes: ResMut<Assets<Mesh>>,
+    materials: ResMut<Assets<StandardMaterial>>,
+    images: ResMut<Assets<Image>>,
+) {
+    let cube = generate_axis_label("z", &mut commands, meshes, materials, images);
+
     // Cube with material containing the rendered UI texture.
     commands.spawn((
         PbrBundle {
-            mesh: cube_handle,
-            material: material_handle,
+            mesh: cube.cube,
+            material: cube.material,
             transform: Transform::from_xyz(0.0, 0.0, 2.0).with_rotation(Quat::from_rotation_x(-PI)),
             ..default()
         },
         Cube,
     ));
+}
+
+struct CubeWithMaterial {
+    cube: Handle<Mesh>,
+    material: Handle<StandardMaterial>,
 }
