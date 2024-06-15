@@ -26,7 +26,10 @@ fn main() {
             CameraControllerPlugin,
             RotatorPlugin,
         ))
-        .add_systems(Startup, (setup_axes, setup_plane))
+        .add_systems(
+            Startup,
+            (setup_axes, setup_plane, setup_camera, setup_light),
+        )
         .run();
 }
 
@@ -62,8 +65,9 @@ fn setup_axes(
         material: materials.add(LineMaterial { color: Color::BLUE }),
         ..default()
     });
+}
 
-    // camera
+fn setup_camera(mut commands: Commands) {
     commands.spawn((
         Camera3dBundle {
             transform: Transform::from_xyz(-2.0, 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
@@ -72,6 +76,13 @@ fn setup_axes(
         CameraController::default(),
         Rotator::default(),
     ));
+}
+
+fn setup_light(mut commands: Commands) {
+    commands.insert_resource(AmbientLight {
+        color: Color::WHITE,
+        brightness: 1.0,
+    });
 }
 
 fn setup_plane(
