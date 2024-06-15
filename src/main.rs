@@ -2,10 +2,12 @@
 
 mod camera_controller;
 use bevy::{
+    core_pipeline::prepass::DepthPrepass,
     pbr::{MaterialPipeline, MaterialPipelineKey},
     prelude::*,
     reflect::TypePath,
     render::{
+        camera::TemporalJitter,
         mesh::{MeshVertexBufferLayout, PrimitiveTopology},
         render_asset::RenderAssetUsages,
         render_resource::{
@@ -18,12 +20,14 @@ use camera_controller::{CameraController, CameraControllerPlugin};
 
 fn main() {
     App::new()
+        .insert_resource(GreetTimer(Timer::from_seconds(0.5, TimerMode::Repeating)))
         .add_plugins((
             DefaultPlugins,
             MaterialPlugin::<LineMaterial>::default(),
             CameraControllerPlugin,
         ))
         .add_systems(Startup, setup)
+        .add_systems(Update, rotate)
         .run();
 }
 
@@ -68,6 +72,35 @@ fn setup(
         },
         CameraController::default(),
     ));
+}
+
+#[derive(Resource)]
+struct GreetTimer(Timer);
+
+fn rotate(
+    mut camera: Query<
+        (
+            Entity,
+            &mut Camera,
+            &mut Camera3d,
+            &mut Transform,
+            Option<&DepthPrepass>,
+            Option<&TemporalJitter>,
+        ),
+        With<Camera3d>,
+    >,
+    mut timer: ResMut<GreetTimer>,
+    time: Res<Time>,
+) {
+    let mut camera_transform = camera.single_mut().3;
+
+    let rotation = 0.2;
+    if timer.0.tick(time.delta()).just_finished() {
+        camera_transform.rotate_around(
+            Vec3::ZERO,
+            Quat::from_euler(EulerRot::XYZ, 0.0, rotation, 0.0),
+        );
+    }
 }
 
 #[derive(Asset, TypePath, Default, AsBindGroup, Debug, Clone)]
