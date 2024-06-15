@@ -247,6 +247,22 @@ fn generate_axis_label(
 
     // Light
     commands.spawn(DirectionalLightBundle::default());
+    // commands.spawn(DirectionalLightBundle {
+    //     transform: Transform {
+    //         translation: Vec3 {
+    //             x: -10.0,
+    //             y: 0.0,
+    //             z: 0.0,
+    //         },
+    //         rotation: Quat::from_xyzw(0.0, 0.0, 0.0, 0.0),
+    //         scale: Vec3::ONE,
+    //     },
+    //     directional_light: DirectionalLight {
+    //         color: Color::rgb(1.0, 1.0, 1.0),
+    //         ..DirectionalLight::default()
+    //     },
+    //     ..DirectionalLightBundle::default()
+    // });
 
     let texture_camera = commands
         .spawn(Camera2dBundle {
