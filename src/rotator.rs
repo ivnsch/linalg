@@ -15,6 +15,8 @@ pub struct Rotator {
     pub key_y: KeyCode,
     pub key_z: KeyCode,
     pub key_x: KeyCode,
+    pub key_shift_left: KeyCode,
+    pub key_shift_right: KeyCode,
     pub pitch: f32,
     pub yaw: f32,
 }
@@ -26,6 +28,8 @@ impl Default for Rotator {
             key_y: KeyCode::KeyY,
             key_z: KeyCode::KeyZ,
             key_x: KeyCode::KeyX,
+            key_shift_left: KeyCode::ShiftLeft,
+            key_shift_right: KeyCode::ShiftRight,
             pitch: 0.0,
             yaw: 0.0,
         }
@@ -66,7 +70,12 @@ fn run_rotator(
         //     println!("p: {:?}", p);
         // }
 
-        let rotation = 0.01;
+        let mut rotation = 0.01;
+        if key_input.pressed(controller.key_shift_left)
+            || key_input.pressed(controller.key_shift_right)
+        {
+            rotation = -rotation;
+        }
 
         // Handle key input
         if key_input.pressed(controller.key_y) {
