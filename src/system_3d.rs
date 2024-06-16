@@ -12,6 +12,7 @@ use bevy::{
     },
 };
 
+#[allow(dead_code)]
 pub fn run_3d() {
     App::new()
         .add_plugins((DefaultPlugins, CameraControllerPlugin, RotatorPlugin))
