@@ -9,3 +9,5 @@ edition = "2021"
 # bevy = "0.14.0-rc.2"
 bevy = { version = "0.13.2" }
 nalgebra = { version = "0.32" }
+ndarray = "0.15.6"
+ndarray-linalg = "0.16.0"
