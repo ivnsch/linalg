@@ -1,5 +1,6 @@
 //! This example demonstrates Bevy's immediate mode drawing API intended for visual debugging.
 
+mod alg;
 mod camera_controller;
 mod rotator;
 mod system_2d;
