@@ -25,6 +25,7 @@ pub fn run_3d() {
                 setup_x_axis,
                 setup_y_axis,
                 setup_z_axis,
+                setup_sphere,
             ),
         )
         .add_systems(Update, setup_axes)
@@ -292,6 +293,29 @@ fn to_pbr_bundle(cube: CubeWithMaterial, transform: Transform) -> PbrBundle {
         ..default()
     }
 }
+
+fn setup_sphere(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
+    let debug_material = materials.add(StandardMaterial { ..default() });
+
+    let shape = meshes.add(Sphere::default().mesh().uv(32, 18));
+    commands.spawn((
+        PbrBundle {
+            mesh: shape,
+            material: debug_material.clone(),
+            transform: Transform::from_xyz(0.0, 0.0, 0.0),
+            ..default()
+        },
+        Shape,
+    ));
+}
+
+/// A marker component for our shapes so we can query them separately from other things
+#[derive(Component)]
+struct Shape;
 
 struct CubeWithMaterial {
     cube: Handle<Mesh>,

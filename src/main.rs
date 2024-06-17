@@ -7,9 +7,12 @@ mod rotator;
 mod system_2d;
 mod system_3d;
 
+#[allow(unused_imports)]
 use system_2d::run_2d;
+#[allow(unused_imports)]
+use system_3d::run_3d;
 
 fn main() {
-    // run_3d()
-    run_2d()
+    run_3d()
+    // run_2d()
 }
