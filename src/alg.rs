@@ -1,8 +1,9 @@
 #![cfg(test)]
-
-use nalgebra::{Matrix1x3, Matrix3, Matrix3x1, Matrix4, Vector3, Vector4};
 // use ndarray::{array, Array1, Array2};
 // use ndarray_linalg::Solve;
+use faer::{assert_matrix_eq, linalg::matmul::matmul, mat, Mat, Parallelism};
+use nalgebra::{Matrix3, Matrix3x1, Vector3};
+use faer::linalg::triangular_solve::solve_lower_triangular_in_place;
 
 #[test]
 fn multiply_vector_matrix() {
@@ -19,6 +20,33 @@ fn multiply_vector_matrix() {
 
     assert_eq!(res, Vector3::new(74, 134, 194));
 }
+
+#[test]
+fn multiply_vector_matrix_faer() {
+    let matrix = mat![
+        [11.0, 12.0, 13.0], 
+        [21.0, 22.0, 23.0],
+        [31.0, 32.0, 33.0]
+    ];
+
+    let v = mat![
+        [1.0], 
+        [2.0],
+        [3.0]
+    ];
+    let mut c = Mat::<f64>::zeros(3, 1);
+
+    matmul(c.as_mut(), matrix.as_ref(), v.as_ref(), None, 1.0, Parallelism::None);
+    // println!("{:?}", c);
+
+    assert_matrix_eq!(
+        c, 
+        mat![[74.0], [134.0], [194.0]],
+        comp = abs,
+        tol = 1e-10
+    );
+}
+
 
 #[test]
 fn solve_no_solutions_equations_system() {
@@ -38,6 +66,33 @@ fn solve_no_solutions_equations_system() {
     println!("solution: {:?}", solution);
 
     assert_eq!(solution, None);
+}
+
+#[test]
+fn solve_no_solutions_equations_system_faer() {
+    let matrix = mat![
+        [0.0, 1.0, 4.0], 
+        [1.0, 3.0, 5.0],
+        [3.0, 7.0, 7.0]
+    ];
+
+    let v = mat![
+        [-5.0], 
+        [-2.0],
+        [6.0]
+    ];
+    
+    let mut x = Mat::<f64>::zeros(4, 2);
+    x.copy_from(&v);
+    solve_lower_triangular_in_place(matrix.as_ref(), x.as_mut(), Parallelism::None);
+    
+// no solutions - returns a matrix with inf and NaN values
+// [
+// [-inf],
+// [inf],
+// [NaN],
+// ]
+    println!("{:?}", x);
 }
 
 #[test]
