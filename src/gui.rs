@@ -115,9 +115,16 @@ pub fn listen_received_character_events(
 ) {
     for event in events.read() {
         println!("received text: {:?}", event);
-        edit_text.single_mut().sections[0]
-            .value
-            .push_str(&event.char);
+        let s = &mut edit_text.single_mut().sections[0].value;
+
+        if event.char == "\u{8}" {
+            if !s.is_empty() {
+                println!("deleting..");
+                s.remove(s.len() - 1);
+            }
+        } else {
+            s.push_str(&event.char);
+        }
     }
 }
 
