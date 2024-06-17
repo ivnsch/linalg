@@ -2,6 +2,7 @@
 
 mod alg;
 mod camera_controller;
+mod gui;
 mod rotator;
 mod system_2d;
 mod system_3d;
