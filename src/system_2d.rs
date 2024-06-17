@@ -82,7 +82,7 @@ fn setup_axes(mut gizmos: Gizmos) {
     );
 }
 
-fn listen_inputs_from_gui(mut commands: Commands, mut input: Query<&mut GuiInput>) {
+fn listen_inputs_from_gui(mut commands: Commands, input: Query<&mut GuiInput>) {
     for input in input.into_iter() {
         match process_vector_str(&input.text) {
             Ok(vec) => {
