@@ -13,6 +13,6 @@ use system_2d::run_2d;
 use system_3d::run_3d;
 
 fn main() {
-    run_3d()
-    // run_2d()
+    // run_3d()
+    run_2d()
 }
