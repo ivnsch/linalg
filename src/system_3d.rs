@@ -13,23 +13,19 @@ use bevy::{
 };
 
 #[allow(dead_code)]
-pub fn run_3d() {
-    App::new()
-        .add_plugins((DefaultPlugins, CameraControllerPlugin, RotatorPlugin))
+pub fn add_3d_space(app: &mut App) {
+    app.add_plugins((DefaultPlugins, CameraControllerPlugin, RotatorPlugin))
         .add_systems(
             Startup,
             (
-                setup_plane,
                 setup_camera,
                 setup_light,
                 setup_x_axis,
                 setup_y_axis,
                 setup_z_axis,
-                setup_sphere,
             ),
         )
-        .add_systems(Update, setup_axes)
-        .run();
+        .add_systems(Update, setup_axes);
 }
 
 fn setup_light(mut commands: Commands) {
@@ -95,31 +91,6 @@ fn setup_camera(mut commands: Commands) {
         CameraController::default(),
         Rotator::default(),
     ));
-}
-
-fn setup_plane(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-) {
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(Plane3d::default().mesh().size(2.0, 2.0)),
-        material: materials.add(StandardMaterial {
-            double_sided: true,
-            cull_mode: None,
-            base_color: Color::rgb(0.3, 0.5, 0.3),
-            ..default()
-        }),
-        ..default()
-    });
-    commands.spawn(PointLightBundle {
-        point_light: PointLight {
-            shadows_enabled: true,
-            ..default()
-        },
-        transform: Transform::from_xyz(4.0, 8.0, 4.0),
-        ..default()
-    });
 }
 
 #[derive(Component)]
@@ -293,29 +264,6 @@ fn to_pbr_bundle(cube: CubeWithMaterial, transform: Transform) -> PbrBundle {
         ..default()
     }
 }
-
-fn setup_sphere(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-) {
-    let debug_material = materials.add(StandardMaterial { ..default() });
-
-    let shape = meshes.add(Sphere::default().mesh().uv(32, 18));
-    commands.spawn((
-        PbrBundle {
-            mesh: shape,
-            material: debug_material.clone(),
-            transform: Transform::from_xyz(0.0, 0.0, 0.0),
-            ..default()
-        },
-        Shape,
-    ));
-}
-
-/// A marker component for our shapes so we can query them separately from other things
-#[derive(Component)]
-struct Shape;
 
 struct CubeWithMaterial {
     cube: Handle<Mesh>,
