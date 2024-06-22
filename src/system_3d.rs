@@ -20,9 +20,9 @@ pub fn add_3d_space(app: &mut App) {
             (
                 setup_camera,
                 setup_light,
-                setup_x_axis,
-                setup_y_axis,
-                setup_z_axis,
+                setup_x_axis_label,
+                setup_y_axis_label,
+                setup_z_axis_label,
             ),
         )
         .add_systems(Update, setup_axes);
@@ -208,7 +208,7 @@ fn generate_axis_label(
     }
 }
 
-fn setup_x_axis(
+fn setup_x_axis_label(
     mut commands: Commands,
     meshes: ResMut<Assets<Mesh>>,
     materials: ResMut<Assets<StandardMaterial>>,
@@ -224,7 +224,7 @@ fn setup_x_axis(
     ));
 }
 
-fn setup_y_axis(
+fn setup_y_axis_label(
     mut commands: Commands,
     meshes: ResMut<Assets<Mesh>>,
     materials: ResMut<Assets<StandardMaterial>>,
@@ -240,7 +240,7 @@ fn setup_y_axis(
     ));
 }
 
-fn setup_z_axis(
+fn setup_z_axis_label(
     mut commands: Commands,
     meshes: ResMut<Assets<Mesh>>,
     materials: ResMut<Assets<StandardMaterial>>,
