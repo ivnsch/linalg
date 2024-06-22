@@ -70,7 +70,7 @@ fn run_rotator(
         //     println!("p: {:?}", p);
         // }
 
-        let mut rotation = 0.01;
+        let mut rotation = 0.03;
         if key_input.pressed(controller.key_shift_left)
             || key_input.pressed(controller.key_shift_right)
         {
