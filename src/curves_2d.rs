@@ -8,23 +8,25 @@ pub fn add_curves_2d_system(app: &mut App) {
 
 #[allow(dead_code)]
 fn draw_square_fn(gizmos: Gizmos) {
-    draw_fn(gizmos, |x| x * x);
+    draw_fn(gizmos, -10, 10, |x| x * x);
 }
 
-fn draw_sin_fn(gizmos: Gizmos) {
-    draw_fn(gizmos, |x| x.sin());
+fn draw_sin_fn(gizmos: Gizmos, time: Res<Time>) {
+    // println!("drawsign t: {}", t);
+    let t = time.elapsed_seconds();
+    // draw_fn(gizmos, -10, 10, |x| x.sin());
+    // animate movement
+    draw_fn(gizmos, -10 + t as i32, 10 + t as i32, |x| x.sin());
 }
 
-fn draw_fn(mut gizmos: Gizmos, function: fn(f32) -> f32) {
+fn draw_fn(mut gizmos: Gizmos, range_start: i32, range_end: i32, function: fn(f32) -> f32) {
     let scaling = 20.0;
     let x_scaling = scaling;
     let y_scaling = scaling;
 
     let mut last_point = None;
 
-    let half_range = 10;
-
-    for i in -half_range..half_range {
+    for i in range_start..range_end {
         let x = i as f32;
         let y = function(x);
 
