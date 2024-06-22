@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 use crate::gui::{button_system, listen_received_character_events, setup_gui, GuiInput};
 
+#[allow(dead_code)]
 pub fn add_vectors_2d_system(app: &mut App) {
     app.add_systems(Startup, setup_gui).add_systems(
         Update,
