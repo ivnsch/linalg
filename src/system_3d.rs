@@ -234,7 +234,7 @@ fn setup_y_axis(
     commands.spawn((
         to_pbr_bundle(
             cube,
-            Transform::from_xyz(0.0, 2.0, 0.0).with_rotation(Quat::from_rotation_x(PI / 2.0)),
+            Transform::from_xyz(0.0, 0.0, 2.0).with_rotation(Quat::from_rotation_x(PI / 2.0)),
         ),
         Cube,
     ));
@@ -250,7 +250,7 @@ fn setup_z_axis(
     commands.spawn((
         to_pbr_bundle(
             cube,
-            Transform::from_xyz(0.0, 0.0, 2.0).with_rotation(Quat::from_rotation_x(-PI)),
+            Transform::from_xyz(0.0, 2.0, 0.0).with_rotation(Quat::from_rotation_x(-PI)),
         ),
         Cube,
     ));
