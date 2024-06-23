@@ -22,8 +22,8 @@ use vectors_2d_system::add_vectors_2d_system;
 
 fn main() {
     let app = &mut App::new();
-    create_2d(app);
-    // create_3d(app);
+    // create_2d(app);
+    create_3d(app);
     app.run();
 }
 

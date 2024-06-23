@@ -25,7 +25,7 @@ pub fn add_3d_space(app: &mut App) {
                 setup_z_axis_label,
             ),
         )
-        .add_systems(Update, setup_axes);
+        .add_systems(Update, (setup_axes, setup_global_axes));
 }
 
 fn setup_light(mut commands: Commands) {
@@ -33,6 +33,53 @@ fn setup_light(mut commands: Commands) {
         color: Color::WHITE,
         brightness: 1.0,
     });
+}
+
+fn setup_global_axes(mut gizmos: Gizmos) {
+    let size = 2.0;
+    let zero = 0.0;
+    // x
+    gizmos.line(
+        Vec3 {
+            x: -size,
+            y: zero,
+            z: zero,
+        },
+        Vec3 {
+            x: size,
+            y: zero,
+            z: zero,
+        },
+        Color::GREEN,
+    );
+    // y
+    gizmos.line(
+        Vec3 {
+            x: zero,
+            y: -size,
+            z: zero,
+        },
+        Vec3 {
+            x: zero,
+            y: size,
+            z: zero,
+        },
+        Color::RED,
+    );
+    // z
+    gizmos.line(
+        Vec3 {
+            x: zero,
+            y: zero,
+            z: -size,
+        },
+        Vec3 {
+            x: zero,
+            y: zero,
+            z: size,
+        },
+        Color::BLUE,
+    );
 }
 
 fn setup_axes(mut gizmos: Gizmos) {
