@@ -12,7 +12,8 @@ fn draw_square_fn(gizmos: Gizmos) {
 }
 
 fn draw_sin_fn(gizmos: Gizmos, _time: Res<Time>) {
-    draw_fn(gizmos, -10, 10, |x| x.sin());
+    const VERT_SCALING: f32 = 5.0;
+    draw_fn(gizmos, -10, 10, |x| x.sin() * VERT_SCALING);
     // animate
     // let t = time.elapsed_seconds();
     // draw_fn(gizmos, -10 + t as i32, 10 + t as i32, |x| x.sin());
