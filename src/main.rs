@@ -3,6 +3,7 @@
 mod alg;
 mod camera_controller;
 mod curves_2d;
+mod curves_3d;
 mod gui;
 mod rotator;
 mod scratchpad_3d;
@@ -12,6 +13,9 @@ mod vectors_2d_system;
 
 use bevy::app::App;
 use curves_2d::add_curves_2d_system;
+#[allow(unused_imports)]
+use curves_3d::add_curves_3d_system;
+#[allow(unused_imports)]
 use scratchpad_3d::add_3d_scratch;
 #[allow(unused_imports)]
 use system_2d::add_2d_space;
@@ -37,5 +41,6 @@ fn create_2d(app: &mut App) {
 #[allow(dead_code)]
 fn create_3d(app: &mut App) {
     add_3d_space(app);
-    add_3d_scratch(app);
+    // add_3d_scratch(app);
+    add_curves_3d_system(app);
 }
