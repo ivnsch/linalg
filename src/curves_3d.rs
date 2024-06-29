@@ -24,7 +24,7 @@ fn draw_sin_fn(gizmos: Gizmos, _time: Res<Time>) {
 
 fn draw_sin_as_vert_vecs(mut gizmos: Gizmos, _time: Res<Time>) {
     let range = 20;
-    draw_planar_fn_as_vert_vecs(&mut gizmos, -range, range, true, |x| x.sin());
+    draw_planar_fn_as_vert_vecs(&mut gizmos, -range, range, true, Color::WHITE, |x| x.sin());
     // animate
     // let t = time.elapsed_seconds();
     // draw_fn(gizmos, -10 + t as i32, 10 + t as i32, |x| x.sin());
@@ -46,8 +46,8 @@ fn draw_electromagnetic_wave(mut gizmos: Gizmos, _time: Res<Time>) {
         amplitude * scalar
     };
 
-    draw_planar_fn_as_vert_vecs(&mut gizmos, -range, range, true, function);
-    draw_planar_fn_as_vert_vecs(&mut gizmos, -range, range, false, function);
+    draw_planar_fn_as_vert_vecs(&mut gizmos, -range, range, true, Color::WHITE, function);
+    draw_planar_fn_as_vert_vecs(&mut gizmos, -range, range, false, Color::GREEN, function);
 }
 
 fn draw_fn(mut gizmos: Gizmos, range_start: i32, range_end: i32, function: fn(f32) -> f32) {
@@ -79,6 +79,7 @@ fn draw_planar_fn_as_vert_vecs(
     range_start: i32,
     range_end: i32,
     parallel_z: bool, // for now just z (true), y (false)
+    color: Color,
     function: fn(f32) -> f32,
 ) {
     let x_scaling = 0.2;
@@ -100,8 +101,9 @@ fn draw_planar_fn_as_vert_vecs(
                 last_z * z_scaling,
                 y * y_scaling,
                 gizmos,
+                color,
             );
-            vert_x_arrow_out(x * x_scaling, z * z_scaling, y * y_scaling, gizmos);
+            vert_x_arrow_out(x * x_scaling, z * z_scaling, y * y_scaling, gizmos, color);
         }
 
         last_point = Some((x, z));
@@ -109,6 +111,6 @@ fn draw_planar_fn_as_vert_vecs(
     }
 }
 
-fn vert_x_arrow_out(x: f32, y: f32, z: f32, gizmos: &mut Gizmos) {
-    gizmos.arrow(Vec3::new(x, 0.0, 0.0), Vec3::new(x, y, z), Color::WHITE);
+fn vert_x_arrow_out(x: f32, y: f32, z: f32, gizmos: &mut Gizmos, color: Color) {
+    gizmos.arrow(Vec3::new(x, 0.0, 0.0), Vec3::new(x, y, z), color);
 }
