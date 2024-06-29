@@ -13,16 +13,15 @@ fn draw_square_fn(gizmos: Gizmos) {
 
 #[allow(dead_code)]
 fn draw_sin_fn(gizmos: Gizmos, _time: Res<Time>) {
-    const VERT_SCALING: f32 = 5.0;
-    draw_fn(gizmos, -10, 10, |x| x.sin() * VERT_SCALING);
+    draw_fn(gizmos, -10, 10, |x| x.sin());
     // animate
     // let t = time.elapsed_seconds();
     // draw_fn(gizmos, -10 + t as i32, 10 + t as i32, |x| x.sin());
 }
 
 fn draw_sin_as_vert_vecs(gizmos: Gizmos, _time: Res<Time>) {
-    const VERT_SCALING: f32 = 5.0;
-    draw_fn_as_vert_vecs(gizmos, -10, 10, |x| x.sin() * VERT_SCALING);
+    let range = 20;
+    draw_fn_as_vert_vecs(gizmos, -range, range, |x| x.sin());
     // animate
     // let t = time.elapsed_seconds();
     // draw_fn(gizmos, -10 + t as i32, 10 + t as i32, |x| x.sin());
@@ -58,13 +57,14 @@ fn draw_fn_as_vert_vecs(
     range_end: i32,
     function: fn(f32) -> f32,
 ) {
-    let x_scaling = 0.1;
+    let x_scaling = 0.2;
     let z_scaling = 0.2;
 
     let mut last_point = None;
 
-    for i in range_start..range_end {
-        let x = i as f32;
+    let mut value = range_start as f32;
+    while value < range_end as f32 {
+        let x = value as f32;
         let z = function(x);
 
         if let Some((last_x, last_z)) = last_point {
@@ -73,6 +73,7 @@ fn draw_fn_as_vert_vecs(
         }
 
         last_point = Some((x, z));
+        value += 0.1;
     }
 }
 
