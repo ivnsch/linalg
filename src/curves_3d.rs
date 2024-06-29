@@ -21,23 +21,23 @@ fn draw_sin_fn(gizmos: Gizmos, _time: Res<Time>) {
 fn draw_fn(mut gizmos: Gizmos, range_start: i32, range_end: i32, function: fn(f32) -> f32) {
     let scaling = 0.2;
     let x_scaling = scaling;
-    let y_scaling = scaling;
+    let z_scaling = scaling;
 
     let mut last_point = None;
 
     for i in range_start..range_end {
         let x = i as f32;
-        let z = 0.0;
-        let y = function(x);
+        let z = function(x);
+        let y = 0.0;
 
-        if let Some((last_x, last_y)) = last_point {
+        if let Some((last_x, last_z)) = last_point {
             gizmos.line(
-                Vec3::new(last_x * x_scaling, z, last_y * y_scaling),
-                Vec3::new(x * x_scaling, z, y * y_scaling),
+                Vec3::new(last_x * x_scaling, last_z * z_scaling, y),
+                Vec3::new(x * x_scaling, z * z_scaling, y),
                 Color::WHITE,
             );
         }
 
-        last_point = Some((x, y));
+        last_point = Some((x, z));
     }
 }
