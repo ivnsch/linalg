@@ -31,19 +31,25 @@ fn draw_sin_as_vert_vecs(mut gizmos: Gizmos, _time: Res<Time>) {
     // draw_fn(gizmos, -10 + t as i32, 10 + t as i32, |x| x.sin());
 }
 
-fn draw_electromagnetic_wave(mut gizmos: Gizmos, _time: Res<Time>) {
+fn draw_electromagnetic_wave(mut gizmos: Gizmos, time: Res<Time>) {
     let range = 20;
+
+    let t = time.elapsed_seconds() as f32;
+    // let t = 0.0; // not animated
 
     let function = |x: f32| {
         // for now not a vector. to draw the electric vs magnetic wave we just change parallel_z parameter
         let amplitude = 1.0;
         let wave_length = 3.0;
         let k = 2.0 * PI / wave_length;
-        let frequency = 1.0;
+        let frequency = 0.5;
         let angular_frequency = 2.0 * PI * frequency;
         let phase = 0.0;
-        let t = 1.0;
         let scalar = ((k * x) - angular_frequency * t + phase).cos();
+        // if (x % 20.0).abs() < 0.01 && x > 20.0 {
+        // println!("t: {}, res: {}, x: {}", t, amplitude * scalar, x);
+        // }
+
         amplitude * scalar
     };
 
@@ -51,7 +57,10 @@ fn draw_electromagnetic_wave(mut gizmos: Gizmos, _time: Res<Time>) {
     draw_planar_fn_as_vert_vecs(&mut gizmos, -range, range, false, Color::GREEN, function);
 }
 
-fn draw_fn(mut gizmos: Gizmos, range_start: i32, range_end: i32, function: fn(f32) -> f32) {
+fn draw_fn<F>(mut gizmos: Gizmos, range_start: i32, range_end: i32, function: F)
+where
+    F: Fn(f32) -> f32,
+{
     let scaling = 0.2;
     let x_scaling = scaling;
     let z_scaling = scaling;
@@ -75,14 +84,16 @@ fn draw_fn(mut gizmos: Gizmos, range_start: i32, range_end: i32, function: fn(f3
     }
 }
 
-fn draw_planar_fn_as_vert_vecs(
+fn draw_planar_fn_as_vert_vecs<F>(
     gizmos: &mut Gizmos,
     range_start: i32,
     range_end: i32,
     parallel_z: bool, // for now just z (true), y (false)
     color: Color,
-    function: fn(f32) -> f32,
-) {
+    function: F,
+) where
+    F: Fn(f32) -> f32,
+{
     let x_scaling = 0.2;
     let z_scaling = 0.2;
     let y_scaling = 0.2;
