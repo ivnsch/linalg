@@ -22,6 +22,7 @@ fn draw_sin_fn(gizmos: Gizmos, _time: Res<Time>) {
     // draw_fn(gizmos, -10 + t as i32, 10 + t as i32, |x| x.sin());
 }
 
+#[allow(dead_code)]
 fn draw_sin_as_vert_vecs(mut gizmos: Gizmos, _time: Res<Time>) {
     let range = 20;
     draw_planar_fn_as_vert_vecs(&mut gizmos, -range, range, true, Color::WHITE, |x| x.sin());
