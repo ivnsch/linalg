@@ -11,12 +11,12 @@ pub fn add_curves_3d_system(app: &mut App) {
 
 #[allow(dead_code)]
 fn draw_square_fn(gizmos: Gizmos) {
-    draw_fn(gizmos, -10, 10, |x| x * x);
+    draw_line_fn(gizmos, -10, 10, |x| x * x);
 }
 
 #[allow(dead_code)]
 fn draw_sin_fn(gizmos: Gizmos, _time: Res<Time>) {
-    draw_fn(gizmos, -10, 10, |x| x.sin());
+    draw_line_fn(gizmos, -10, 10, |x| x.sin());
     // animate
     // let t = time.elapsed_seconds();
     // draw_fn(gizmos, -10 + t as i32, 10 + t as i32, |x| x.sin());
@@ -57,7 +57,7 @@ fn draw_electromagnetic_wave(mut gizmos: Gizmos, time: Res<Time>) {
     draw_planar_fn_as_vert_vecs(&mut gizmos, -range, range, false, Color::GREEN, function);
 }
 
-fn draw_fn<F>(mut gizmos: Gizmos, range_start: i32, range_end: i32, function: F)
+fn draw_line_fn<F>(mut gizmos: Gizmos, range_start: i32, range_end: i32, function: F)
 where
     F: Fn(f32) -> f32,
 {
@@ -84,6 +84,8 @@ where
     }
 }
 
+/// draws planar function as a sequence of vectors,
+/// planar here meaning specifically on xz plane (parallel_z == true) or xy plane (parallel_z == false)
 fn draw_planar_fn_as_vert_vecs<F>(
     gizmos: &mut Gizmos,
     range_start: i32,
