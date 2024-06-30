@@ -11,12 +11,12 @@ pub fn add_curves_3d_system(app: &mut App) {
 
 #[allow(dead_code)]
 fn draw_square_fn(gizmos: Gizmos) {
-    draw_line_fn(gizmos, -10, 10, |x| x * x);
+    draw_line_fn(gizmos, -10, 10, 1, |x| x * x);
 }
 
 #[allow(dead_code)]
 fn draw_sin_fn(gizmos: Gizmos, _time: Res<Time>) {
-    draw_line_fn(gizmos, -10, 10, |x| x.sin());
+    draw_line_fn(gizmos, -10, 10, 1, |x| x.sin());
     // animate
     // let t = time.elapsed_seconds();
     // draw_fn(gizmos, -10 + t as i32, 10 + t as i32, |x| x.sin());
@@ -57,8 +57,13 @@ fn draw_electromagnetic_wave(mut gizmos: Gizmos, time: Res<Time>) {
     draw_planar_fn_as_vert_vecs(&mut gizmos, -range, range, false, Color::GREEN, function);
 }
 
-fn draw_line_fn<F>(mut gizmos: Gizmos, range_start: i32, range_end: i32, function: F)
-where
+pub fn draw_line_fn<F>(
+    mut gizmos: Gizmos,
+    range_start: i32,
+    range_end: i32,
+    step_size: usize,
+    function: F,
+) where
     F: Fn(f32) -> f32,
 {
     let scaling = 0.2;
@@ -67,8 +72,8 @@ where
 
     let mut last_point = None;
 
-    for i in range_start..range_end {
-        let x = i as f32;
+    for x_int in (range_start..range_end).step_by(step_size) {
+        let x = x_int as f32;
         let z = function(x);
         let y = 0.0;
 
