@@ -2,15 +2,15 @@ use bevy::{math::Vec3, prelude::Gizmos, render::color::Color};
 
 /// draws function as a line
 pub fn draw_line_fn<F>(
-    mut gizmos: Gizmos,
+    gizmos: &mut Gizmos,
     range_start: i32,
     range_end: i32,
     step_size: usize,
+    scaling: f32,
     function: F,
 ) where
     F: Fn(f32) -> f32,
 {
-    let scaling = 0.2;
     let x_scaling = scaling;
     let z_scaling = scaling;
 

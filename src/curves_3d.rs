@@ -12,13 +12,13 @@ pub fn add_curves_3d_system(app: &mut App) {
 }
 
 #[allow(dead_code)]
-fn draw_square_fn(gizmos: Gizmos) {
-    draw_line_fn(gizmos, -10, 10, 1, |x| x * x);
+fn draw_square_fn(mut gizmos: Gizmos) {
+    draw_line_fn(&mut gizmos, -10, 10, 1, 0.2, |x| x * x);
 }
 
 #[allow(dead_code)]
-fn draw_sin_fn(gizmos: Gizmos, _time: Res<Time>) {
-    draw_line_fn(gizmos, -10, 10, 1, |x| x.sin());
+fn draw_sin_fn(mut gizmos: Gizmos, _time: Res<Time>) {
+    draw_line_fn(&mut gizmos, -10, 10, 1, 0.2, |x| x.sin());
     // animate
     // let t = time.elapsed_seconds();
     // draw_fn(gizmos, -10 + t as i32, 10 + t as i32, |x| x.sin());
