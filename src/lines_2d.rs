@@ -106,24 +106,30 @@ where
 }
 
 fn draw_column_space(gizmos: &mut Gizmos, matrix: &MatrixWithResults, scaling: f32) {
-    for col in matrix.m.column_iter() {
-        gizmos.arrow_2d(
-            Vec2 { x: 0.0, y: 0.0 },
-            Vec2 {
-                x: col[0] * scaling,
-                y: col[1] * scaling,
-            },
-            Color::BLUE,
-        );
-    }
-    gizmos.arrow_2d(
-        Vec2 { x: 0.0, y: 0.0 },
-        Vec2 {
-            x: matrix.res[0] * scaling,
-            y: matrix.res[1] * scaling,
-        },
-        Color::YELLOW,
-    );
+    let col1 = matrix.m.column(0);
+    let col2 = matrix.m.column(1);
+
+    let v1 = Vec2 {
+        x: col1[0] * scaling,
+        y: col1[1] * scaling,
+    };
+    let v2 = Vec2 {
+        x: col2[0] * scaling,
+        y: col2[1] * scaling,
+    };
+    let v_sum = Vec2 {
+        x: matrix.res[0] * scaling,
+        y: matrix.res[1] * scaling,
+    };
+
+    let origin = Vec2 { x: 0.0, y: 0.0 };
+    gizmos.arrow_2d(origin, v1, Color::BLUE);
+    gizmos.arrow_2d(origin, v2, Color::BLUE);
+    gizmos.arrow_2d(origin, v_sum, Color::YELLOW);
+
+    // finish parallelogram (visual guide)
+    gizmos.arrow_2d(v1, v_sum, Color::BLACK);
+    gizmos.arrow_2d(v2, v_sum, Color::BLACK);
 }
 
 fn to_line_coefficients<F>(line_closure: F) -> Line
