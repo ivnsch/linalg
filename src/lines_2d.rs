@@ -1,7 +1,6 @@
+use crate::functions::draw_line2d_fn;
 use bevy::prelude::*;
-use nalgebra::{Matrix2, Vector2};
-
-use crate::functions::draw_line_fn;
+use nalgebra::{ArrayStorage, Const, Matrix2, Vector2};
 
 #[allow(dead_code)]
 pub fn add_lines_2d_system(app: &mut App) {
@@ -18,11 +17,20 @@ fn draw_lines(mut gizmos: Gizmos) {
     draw_line2d_fn(&mut gizmos, -half_range, half_range, 10, scaling, line1);
     draw_line2d_fn(&mut gizmos, -half_range, half_range, 10, scaling, line2);
 
-    let intersection = intersection(line1, line2);
-    draw_intersection(gizmos, intersection, scaling);
+    let matrix: MatrixWithResults = to_matrix(line1, line2);
+    let intersection = intersection(&matrix);
+    // println!("matrix: {:?} intersection: {:?}", matrix, intersection);
+
+    draw_intersection(&mut gizmos, intersection, scaling);
+
+    // just for convenience, draw column space on same plot
+    // note that column space looks different depending on coefficient multipliers and row ordering,
+    // and that we derive these from closures,
+    // so entering here equations from somewhere else can render different column space vectors
+    draw_column_space(&mut gizmos, &matrix, scaling);
 }
 
-fn draw_intersection(mut gizmos: Gizmos, intersection: Intersection, scaling: f32) {
+fn draw_intersection(gizmos: &mut Gizmos, intersection: Intersection, scaling: f32) {
     gizmos.circle_2d(
         Vec2 {
             x: intersection.x * scaling,
@@ -33,7 +41,16 @@ fn draw_intersection(mut gizmos: Gizmos, intersection: Intersection, scaling: f3
     );
 }
 
-fn intersection<F1, F2>(line1: F1, line2: F2) -> Intersection
+fn intersection(matrix: &MatrixWithResults) -> Intersection {
+    // TODO no unwrap
+    let solution = matrix.m.lu().solve(&matrix.res).unwrap();
+    Intersection {
+        x: solution.x,
+        y: solution.y,
+    }
+}
+
+fn to_matrix<F1, F2>(line1: F1, line2: F2) -> MatrixWithResults
 where
     F1: Fn(f32) -> f32,
     F2: Fn(f32) -> f32,
@@ -41,25 +58,12 @@ where
     let entry1 = to_matrix_entry(line1);
     let entry2 = to_matrix_entry(line2);
 
-    let a: nalgebra::Matrix<
-        f32,
-        nalgebra::Const<2>,
-        nalgebra::Const<2>,
-        nalgebra::ArrayStorage<f32, 2, 2>,
-    > = Matrix2::new(
-        entry1.x, entry1.y, //
-        entry2.x, entry2.y, //
-    );
-
-    let b = Vector2::new(entry1.res, entry2.res);
-
-    // TODO no unwrap
-    let solution = a.lu().solve(&b).unwrap();
-    // println!("a: {:?}, b: {:?}, solution: {:?}", a, b, solution);
-
-    Intersection {
-        x: solution.x,
-        y: solution.y,
+    MatrixWithResults {
+        m: Matrix2::new(
+            entry1.x, entry1.y, //
+            entry2.x, entry2.y, //
+        ),
+        res: Vector2::new(entry1.res, entry2.res),
     }
 }
 
@@ -68,6 +72,12 @@ struct MatrixEntry {
     x: f32,
     y: f32,
     res: f32,
+}
+
+#[derive(Debug)]
+struct MatrixWithResults {
+    m: Matrix2<f32>,
+    res: Vector2<f32>,
 }
 
 #[derive(Debug)]
@@ -87,11 +97,33 @@ where
     F: Fn(f32) -> f32,
 {
     let coefficients = to_line_coefficients(line_closure);
+    // println!("coefficients: {:?}", coefficients);
     MatrixEntry {
         x: -coefficients.m,
         y: 1.0,
         res: coefficients.b,
     }
+}
+
+fn draw_column_space(gizmos: &mut Gizmos, matrix: &MatrixWithResults, scaling: f32) {
+    for col in matrix.m.column_iter() {
+        gizmos.arrow_2d(
+            Vec2 { x: 0.0, y: 0.0 },
+            Vec2 {
+                x: col[0] * scaling,
+                y: col[1] * scaling,
+            },
+            Color::BLUE,
+        );
+    }
+    gizmos.arrow_2d(
+        Vec2 { x: 0.0, y: 0.0 },
+        Vec2 {
+            x: matrix.res[0] * scaling,
+            y: matrix.res[1] * scaling,
+        },
+        Color::YELLOW,
+    );
 }
 
 fn to_line_coefficients<F>(line_closure: F) -> Line
@@ -103,12 +135,7 @@ where
     let x2 = 2.0;
     let y2 = line_closure(x2);
 
-    let a: nalgebra::Matrix<
-        f32,
-        nalgebra::Const<2>,
-        nalgebra::Const<2>,
-        nalgebra::ArrayStorage<f32, 2, 2>,
-    > = Matrix2::new(
+    let a: nalgebra::Matrix<f32, Const<2>, Const<2>, ArrayStorage<f32, 2, 2>> = Matrix2::new(
         x1, 1.0, //
         x2, 1.0, //
     );
