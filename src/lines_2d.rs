@@ -11,10 +11,10 @@ pub fn add_lines_2d_system(app: &mut App) {
 fn draw_lines(mut gizmos: Gizmos) {
     let half_range = 800;
 
-    let line1 = |x| (x + 200.0) * 2.0;
-    let line2 = |x| x * -1.0 + 1.5;
+    let line1 = |x| (-1.0 - x) / -2.0;
+    let line2 = |x| 3.0 - (x * 2.0);
 
-    let scaling = 1.0;
+    let scaling = 100.0;
     draw_line_fn(&mut gizmos, -half_range, half_range, 10, scaling, line1);
     draw_line_fn(&mut gizmos, -half_range, half_range, 10, scaling, line2);
 
