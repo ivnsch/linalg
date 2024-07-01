@@ -15,8 +15,8 @@ fn draw_lines(mut gizmos: Gizmos) {
     let line2 = |x| 3.0 - (x * 2.0);
 
     let scaling = 100.0;
-    draw_line_fn(&mut gizmos, -half_range, half_range, 10, scaling, line1);
-    draw_line_fn(&mut gizmos, -half_range, half_range, 10, scaling, line2);
+    draw_line2d_fn(&mut gizmos, -half_range, half_range, 10, scaling, line1);
+    draw_line2d_fn(&mut gizmos, -half_range, half_range, 10, scaling, line2);
 
     let intersection = intersection(line1, line2);
     draw_intersection(gizmos, intersection, scaling);
