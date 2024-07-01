@@ -14,15 +14,19 @@ fn draw_lines(mut gizmos: Gizmos) {
     let line1 = |x| (x + 200.0) * 2.0;
     let line2 = |x| x * -1.0 + 1.5;
 
-    draw_line_fn(&mut gizmos, -half_range, half_range, 10, 1.0, line1);
-    draw_line_fn(&mut gizmos, -half_range, half_range, 10, 1.0, line2);
+    let scaling = 1.0;
+    draw_line_fn(&mut gizmos, -half_range, half_range, 10, scaling, line1);
+    draw_line_fn(&mut gizmos, -half_range, half_range, 10, scaling, line2);
 
     let intersection = intersection(line1, line2);
+    draw_intersection(gizmos, intersection, scaling);
+}
 
+fn draw_intersection(mut gizmos: Gizmos, intersection: Intersection, scaling: f32) {
     gizmos.circle_2d(
         Vec2 {
-            x: intersection.x,
-            y: intersection.y,
+            x: intersection.x * scaling,
+            y: intersection.y * scaling,
         },
         10.0,
         Color::WHITE,
