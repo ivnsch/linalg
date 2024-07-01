@@ -21,6 +21,7 @@ use grid_2d::add_grid_2d_system;
 use lines_2d::add_lines_2d_system;
 #[allow(unused_imports)]
 use scratchpad_3d::add_3d_scratch;
+use system_2d::add_2d_axes;
 #[allow(unused_imports)]
 use system_2d::add_2d_space;
 #[allow(unused_imports)]
@@ -40,6 +41,8 @@ fn create_2d(app: &mut App) {
     add_2d_space(app);
     // add_vectors_2d_system(app);
     add_grid_2d_system(app);
+    // grid completely hiding axes so draw axes on top.
+    add_2d_axes(app);
     add_lines_2d_system(app);
     // add_curves_2d_system(app);
 }

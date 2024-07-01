@@ -6,6 +6,10 @@ pub fn add_2d_space(app: &mut App) {
         .add_systems(Update, setup_axes);
 }
 
+pub fn add_2d_axes(app: &mut App) {
+    app.add_systems(Update, setup_axes);
+}
+
 fn setup_camera(mut commands: Commands) {
     commands.spawn(Camera2dBundle::default());
 }
