@@ -153,6 +153,43 @@ fn echelon_form() {
         assert_eq!(rref_a, expected);
 }
 
+#[test]
+fn echelon_form_with_free_variables() {
+        let a = matrix(
+            vec![
+                3.0, 8.0, 0.0, //
+                0.0, 0.0, 2.0, //
+                1.0, 0.0, 2.0, //
+                0.0, 2.0, 1.0, //
+                0.0, 0.0, 0.0
+            ],
+            3,
+            5,
+            Col,
+        );
+
+        // Calculate reduced row echelon form
+        let rref_a = a.rref();
+        println!("rref_a: {}", rref_a);
+
+        // // the solution: x1 = 1, x2 = -1, x3 = 2
+        let expected= matrix(
+            vec![
+                1.0, 0.0, 0.0, //
+                0.0, 1.0, 0.0, //
+                0.0, 0.0, 1.0, //
+                0.25, 1.25, -0.75, //
+                0.0, 0.0, 0.0, //
+            ],
+            3,
+            5,
+            Col,
+        );
+
+        assert_eq!(rref_a, expected);
+}
+
+
 // #[test]
 // fn solve_equations_system2() {
 //     let a: Array2<f64> = array![[3., 2., -1.], [2., -2., 4.], [-2., 1., -2.]];
