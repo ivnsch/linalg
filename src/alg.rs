@@ -1,4 +1,5 @@
 #![cfg(test)]
+use approx::assert_relative_eq;
 // use ndarray::{array, Array1, Array2};
 // use ndarray_linalg::Solve;
 use faer::{assert_matrix_eq, linalg::matmul::matmul, mat, Mat, Parallelism};
@@ -112,6 +113,9 @@ fn solve_single_solution_equations_system() {
     assert_eq!(lu_solution.unwrap(), expected_solution);
     let qr_solution = a.qr().solve(&b); 
     assert_eq!(qr_solution.unwrap(), expected_solution);
+    let least_squares_solution = a.svd(true, true).solve(&b, 0.0); 
+    // not sure about background of specific epsilon here, leaving smallest that passes (> f64::EPSILON)
+    assert_relative_eq!(least_squares_solution.unwrap(), expected_solution, epsilon = 0.00000000000001);
 }
 
 // #[test]
