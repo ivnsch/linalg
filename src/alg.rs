@@ -5,6 +5,7 @@ use approx::assert_relative_eq;
 use faer::{assert_matrix_eq, linalg::matmul::matmul, mat, Mat, Parallelism};
 use nalgebra::{Matrix3, Matrix3x1, Vector3};
 use faer::linalg::triangular_solve::solve_lower_triangular_in_place;
+use peroxide::fuga::{matrix, LinearAlgebra, Shape::Col};
 
 #[test]
 fn multiply_vector_matrix() {
@@ -116,6 +117,40 @@ fn solve_single_solution_equations_system() {
     let least_squares_solution = a.svd(true, true).solve(&b, 0.0); 
     // not sure about background of specific epsilon here, leaving smallest that passes (> f64::EPSILON)
     assert_relative_eq!(least_squares_solution.unwrap(), expected_solution, epsilon = 0.00000000000001);
+}
+
+#[test]
+fn echelon_form() {
+        let a = matrix(
+            vec![
+                1.0, 2.0, -1.0, //
+                1.0, -1.0, -2.0, //
+                1.0, 2.0, 3.0, //
+                2.0, 7.0, 7.0,
+            ],
+            3,
+            4,
+            Col,
+        );
+
+        // Calculate reduced row echelon form
+        let rref_a = a.rref();
+        // println!("rref_a: {}", rref_a);
+
+        // the solution: x1 = 1, x2 = -1, x3 = 2
+        let expected= matrix(
+            vec![
+                1.0, 0.0, 0.0, //
+                0.0, 1.0, 0.0, //
+                0.0, 0.0, 1.0, //
+                1.0, -1.0, 2.0,
+            ],
+            3,
+            4,
+            Col,
+        );
+
+        assert_eq!(rref_a, expected);
 }
 
 // #[test]
