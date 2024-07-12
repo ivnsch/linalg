@@ -5,7 +5,7 @@ const HOVERED_BUTTON: Color = Color::rgb(0.25, 0.25, 0.25);
 const PRESSED_BUTTON: Color = Color::rgb(0.35, 0.75, 0.35);
 
 /// text input confirmed via add button
-#[derive(Component, Default)]
+#[derive(Event, Default)]
 pub struct WaveGuiInput {
     pub text: String,
 }
@@ -87,7 +87,7 @@ pub fn setup_wave_gui(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 
 pub fn button_system(
-    mut commands: Commands,
+    mut my_events: EventWriter<WaveGuiInput>,
     mut interaction_query: Query<
         (
             &Interaction,
@@ -105,7 +105,7 @@ pub fn button_system(
                 println!("pressed add!");
                 match edit_text.get_single() {
                     Ok(text) => {
-                        commands.spawn(WaveGuiInput {
+                        my_events.send(WaveGuiInput {
                             text: text.sections[0].value.clone(),
                         });
                     }

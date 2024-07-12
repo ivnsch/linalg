@@ -8,19 +8,22 @@ use crate::wave_gui::{
 
 #[allow(dead_code)]
 pub fn add_wave_2d_system(app: &mut App) {
-    app.add_systems(Startup, setup_wave_gui).add_systems(
-        Update,
-        (
-            draw_wave,
-            listen_received_character_events,
-            button_system,
-            listen_inputs_from_gui,
-        ),
-    );
+    app.add_event::<WaveGuiInput>()
+        .add_systems(Startup, setup_wave_gui)
+        .add_systems(
+            Update,
+            (
+                draw_wave,
+                listen_received_character_events,
+                button_system,
+                listen_inputs_from_gui,
+            ),
+        );
 }
 
 fn draw_wave(mut gizmos: Gizmos, time: Res<Time>, amplitude: Query<&Amplitude>) {
     for amplitude in amplitude.iter() {
+        // println!("\x1b[93m??? amplitude: {:?}\x1b[0m", amplitude);
         let range = 20;
 
         let t = time.elapsed_seconds() as f32;
@@ -79,8 +82,8 @@ fn vert_x_arrow_out(x: f32, y: f32, gizmos: &mut Gizmos, color: Color) {
     gizmos.arrow_2d(Vec2::new(x, 0.0), Vec2::new(x, y), color);
 }
 
-fn listen_inputs_from_gui(mut commands: Commands, input: Query<&mut WaveGuiInput>) {
-    for input in input.into_iter() {
+fn listen_inputs_from_gui(mut events: EventReader<WaveGuiInput>, mut commands: Commands) {
+    for input in events.read() {
         match process_amplitude_str(&input.text) {
             Ok(a) => {
                 commands.spawn(a);
@@ -98,5 +101,5 @@ fn process_amplitude_str(str: &str) -> Result<Amplitude, String> {
     }
 }
 
-#[derive(Component)]
+#[derive(Component, Debug)]
 struct Amplitude(f32);
