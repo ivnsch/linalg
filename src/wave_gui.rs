@@ -18,7 +18,7 @@ pub struct TextInput;
 pub fn setup_wave_gui(mut commands: Commands, asset_server: Res<AssetServer>) {
     let font = asset_server.load("fonts/FiraMono-Medium.ttf");
 
-    let mut root = commands.spawn(NodeBundle {
+    let root = commands.spawn(NodeBundle {
         style: Style {
             position_type: PositionType::Absolute,
             flex_direction: FlexDirection::Column,
@@ -32,6 +32,10 @@ pub fn setup_wave_gui(mut commands: Commands, asset_server: Res<AssetServer>) {
         ..default()
     });
 
+    add_input_with_button(&font, root, "Amplitude");
+}
+
+pub fn add_input_with_button(font: &Handle<Font>, mut root: EntityCommands, label: &str) {
     let label = TextBundle {
         style: Style {
             position_type: PositionType::Relative,
@@ -42,7 +46,7 @@ pub fn setup_wave_gui(mut commands: Commands, asset_server: Res<AssetServer>) {
             ..default()
         },
         text: Text::from_section(
-            "Amplitude:".to_string(),
+            label.to_string(),
             TextStyle {
                 font: font.clone(),
                 font_size: 20.0,
@@ -184,10 +188,16 @@ fn add_add_button(mut gui_root: EntityCommands, font: &Handle<Font>) {
     );
 
     gui_root.with_children(|parent| {
-        parent.spawn(button_node).with_children(|parent| {
-            parent.spawn(button).with_children(|parent| {
-                parent.spawn(label);
+        parent
+            .spawn((MyButton, button_node))
+            .with_children(|parent| {
+                parent.spawn(button).with_children(|parent| {
+                    parent.spawn(label);
+                });
             });
-        });
     });
 }
+
+/// A marker component for our shapes so we can query them separately from other things
+#[derive(Component)]
+struct MyButton;
