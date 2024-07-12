@@ -5,9 +5,8 @@ const HOVERED_BUTTON: Color = Color::rgb(0.25, 0.25, 0.25);
 const PRESSED_BUTTON: Color = Color::rgb(0.35, 0.75, 0.35);
 
 /// text input confirmed via add button
-/// to be interpreted and processed by system using this gui
 #[derive(Component, Default)]
-pub struct GuiInput {
+pub struct WaveGuiInput {
     pub text: String,
 }
 
@@ -16,7 +15,7 @@ pub struct GuiInput {
 #[derive(Component, Default)]
 pub struct TextInput;
 
-pub fn setup_gui(mut commands: Commands, asset_server: Res<AssetServer>) {
+pub fn setup_wave_gui(mut commands: Commands, asset_server: Res<AssetServer>) {
     let font = asset_server.load("fonts/FiraMono-Medium.ttf");
 
     let mut root = commands.spawn(NodeBundle {
@@ -43,7 +42,7 @@ pub fn setup_gui(mut commands: Commands, asset_server: Res<AssetServer>) {
             ..default()
         },
         text: Text::from_section(
-            "Add a vector:".to_string(),
+            "Amplitude:".to_string(),
             TextStyle {
                 font: font.clone(),
                 font_size: 20.0,
@@ -106,7 +105,7 @@ pub fn button_system(
                 println!("pressed add!");
                 match edit_text.get_single() {
                     Ok(text) => {
-                        commands.spawn(GuiInput {
+                        commands.spawn(WaveGuiInput {
                             text: text.sections[0].value.clone(),
                         });
                     }
