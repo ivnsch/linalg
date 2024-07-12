@@ -82,10 +82,17 @@ fn vert_x_arrow_out(x: f32, y: f32, gizmos: &mut Gizmos, color: Color) {
     gizmos.arrow_2d(Vec2::new(x, 0.0), Vec2::new(x, y), color);
 }
 
-fn listen_inputs_from_gui(mut events: EventReader<WaveGuiInput>, mut commands: Commands) {
+fn listen_inputs_from_gui(
+    mut events: EventReader<WaveGuiInput>,
+    mut commands: Commands,
+    query: Query<Entity, With<Amplitude>>,
+) {
     for input in events.read() {
         match process_amplitude_str(&input.text) {
             Ok(a) => {
+                for e in query.iter() {
+                    commands.entity(e).despawn_recursive();
+                }
                 commands.spawn(a);
             }
             Err(err) => println!("error: {}", err), // TODO error handling
