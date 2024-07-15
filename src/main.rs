@@ -2,6 +2,7 @@
 
 mod alg;
 mod balance_chem_eq;
+mod balance_diet;
 mod camera_controller;
 mod curves_2d;
 mod curves_3d;
