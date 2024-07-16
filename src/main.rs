@@ -17,6 +17,7 @@ mod system_3d;
 mod vectors_2d_system;
 mod wave;
 mod wave_gui;
+mod electrical_network;
 
 use bevy::app::App;
 #[allow(unused_imports)]
