@@ -4,6 +4,7 @@ mod test {
     use nalgebra::Vector3;
     use peroxide::fuga::{matrix, LinearAlgebra, Shape::Col};
 
+    // based on an example from Lay's linear algebra
     #[test]
     fn balance_chem_eq() {
         let mol1 = to_vector_molecule(Mol {

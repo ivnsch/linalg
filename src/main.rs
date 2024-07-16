@@ -2,13 +2,14 @@
 
 mod alg;
 mod balance_chem_eq;
+mod balance_diet;
+mod electrical_network;
 mod functions;
 mod grid_2d;
 mod gui;
 mod lines_2d;
 mod system_2d;
 mod vectors_2d_system;
-
 use bevy::app::App;
 use grid_2d::add_grid_2d_system;
 #[allow(unused_imports)]
