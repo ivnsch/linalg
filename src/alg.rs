@@ -5,7 +5,7 @@ use approx::assert_relative_eq;
 use faer::{assert_matrix_eq, linalg::matmul::matmul, mat, Mat, Parallelism};
 use nalgebra::{Matrix3, Matrix3x1, Vector3};
 use faer::linalg::triangular_solve::solve_lower_triangular_in_place;
-use peroxide::fuga::{matrix, LinearAlgebra, Shape::Col};
+use peroxide::fuga::{matrix, LinearAlgebra, Shape::Col, SolveKind};
 
 #[test]
 fn multiply_vector_matrix() {
@@ -187,6 +187,91 @@ fn echelon_form_with_free_variables() {
         );
 
         assert_eq!(rref_a, expected);
+}
+
+#[test]
+fn lu_decomposition() {
+        let a = matrix(
+            vec![
+                2.0, 1.0, 3.0, //
+                1.0, -1.0, 2.0, //
+                3.0, 2.0, 1.0, //
+            ],
+            3,
+            3,
+            Col,
+        );
+
+        let e = 0.0001;
+
+        let b  = &vec![5.0, 4.0, 7.0];
+        let res = a.solve(b, SolveKind::LU);
+        println!("res: {:?}", res);
+        assert_relative_eq!(res[0], 3.0, epsilon = e);
+        assert_relative_eq!(res[1], -1.0, epsilon = e);
+        assert_relative_eq!(res[2], 0.0, epsilon = e);
+
+        let lu= a.lu();
+        // println!("lu: {:?}", lu);
+
+        // l: lower triangular matrix
+        let l = lu.l;
+        // l:        c[0]   c[1]   c[2]
+        // r[0]      1      0      0
+        // r[1] 0.6667      1      0
+        // r[2] 0.3333 0.7143      1
+        println!("l: {}", l);
+        // row 1
+        assert_relative_eq!(l[(0,0)], 1.0, epsilon = e);
+        assert_relative_eq!(l[(0,1)], 0.0, epsilon = e);
+        assert_relative_eq!(l[(0,2)], 0.0, epsilon = e);
+
+        // row 2
+        assert_relative_eq!(l[(1,0)], 0.666666, epsilon = e);
+        assert_relative_eq!(l[(1,1)], 1.0, epsilon = e);
+        assert_relative_eq!(l[(1,2)], 0.0, epsilon = e);
+        
+        // row 3
+        assert_relative_eq!(l[(2,0)], 0.333333, epsilon = e);
+        assert_relative_eq!(l[(2,1)], 0.714285, epsilon = e);
+        assert_relative_eq!(l[(2,2)], 1.0, epsilon = e);
+
+        // u: echelon form of A
+        let u = lu.u;
+        // u:          c[0]    c[1]    c[2]
+        // r[0]       3       1       2
+        // r[1]       0  2.3333 -0.3333
+        // r[2]       0       0 -1.4286
+        println!("u: {}", u);
+        // row 1
+        assert_relative_eq!(u[(0,0)], 3.0, epsilon = e);
+        assert_relative_eq!(u[(0,1)], 1.0, epsilon = e);
+        assert_relative_eq!(u[(0,2)], 2.0, epsilon = e);
+
+        // row 2
+        assert_relative_eq!(u[(1,0)], 0.0, epsilon = e);
+        assert_relative_eq!(u[(1,1)], 2.333333, epsilon = e);
+        assert_relative_eq!(u[(1,2)], -0.333333, epsilon = e);
+        
+        // row 3
+        assert_relative_eq!(u[(2,0)], 0.0, epsilon = e);
+        assert_relative_eq!(u[(2,1)], 0.0, epsilon = e);
+        assert_relative_eq!(u[(2,2)], -1.428571, epsilon = e);
+
+        // check whether solving LU "by hand" renders the same result as solving the original matrix
+        // incidentally using LU internally to solve these as well
+        let y = l.solve(b, SolveKind::LU);
+        let x = u.solve(&y, SolveKind::LU);
+
+        // this gives [4.0, -0.2, -3.4], 
+        // which is different to solution [3.0, -1.0, 0.0]
+        // what's wrong? TODO
+        println!("x = {:?}", x);
+
+        assert_relative_eq!(res[0], x[0], epsilon = e);
+        assert_relative_eq!(res[1], x[1], epsilon = e);
+        assert_relative_eq!(res[2], x[2], epsilon = e);
+
 }
 
 
